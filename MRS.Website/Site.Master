@@ -1,0 +1,60 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="MRS.Website.Site" EnableViewState="true" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+
+    <title></title>
+
+    <link href="Content/bootswatch/cosmo/bootstrap.min.css" rel="stylesheet" />
+    <link href="Content/bootstrap-modal.css" rel="stylesheet" />
+    <link href="Content/themes/base/minified/jquery-ui.min.css" rel="stylesheet" />
+    <link href="Content/font-awesome.css" rel="stylesheet" />
+    <link href="Content/site/main.min.css" rel="stylesheet" />
+    
+    <script src="Scripts/jquery-2.0.2.min.js"></script>
+    <script src="Scripts/jquery-ui-1.10.3.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script src="Scripts/bootstrap-modal.js"></script>
+    <script src="Scripts/bootstrap-modalmanager.js"></script>
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+   
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ScriptManager runat="server"></asp:ScriptManager>
+        <!-- BEGIN NAVBAR -->
+        <div class="navbar navbar-inverse">
+            <div class="navbar-inner">
+                <a class="brand" href="#">Maintenance Request System</a>
+                <ul class="nav">                   
+                    <li><a href='<%=ResolveUrl("~/Dashboard.aspx") %>'>Dashboard</a></li>
+                </ul>
+                <ul class="nav pull-right">                    
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <asp:Literal ID="litUserName" runat="server"></asp:Literal> <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><asp:LinkButton ID="lBtnLogout" runat="server" OnClick="lBtnLogout_Click">Logout</asp:LinkButton></li>                            
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END NAVBAR -->
+
+        <div class="container-fluid">
+            <h2 class="page-header">
+                <asp:ContentPlaceHolder ID="pageHeading" runat="server"></asp:ContentPlaceHolder>
+            </h2>
+            <asp:ContentPlaceHolder ID="main" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+
+    </form>
+</body>
+</html>

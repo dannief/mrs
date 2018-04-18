@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C6638295-20A1-47F8-AFD8-2BF391E57C45}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MRS.Application</RootNamespace>
+    <AssemblyName>MRS.Application</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\CreateRequestCommand.cs" />
+    <Compile Include="Commands\Handlers\CreateRequestCommandHandler.cs" />
+    <Compile Include="Interfaces\ILookupService.cs" />
+    <Compile Include="Interfaces\IRequestService.cs" />
+    <Compile Include="LookupService.cs" />
+    <Compile Include="Mappers\RequestDtoMapper.cs" />
+    <Compile Include="Mappers\RequestListItemDtoMapper.cs" />
+    <Compile Include="Mappers\WorkOrderDtoMapper.cs" />
+    <Compile Include="RequestService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MRS.DataTransferObjects\MRS.DataTransferObjects.csproj">
+      <Project>{3eb9b60c-909c-4ffa-975e-369f957922a1}</Project>
+      <Name>MRS.DataTransferObjects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MRS.Domain\MRS.Domain.csproj">
+      <Project>{16762494-2536-45ed-a9b0-cb80adbd44a2}</Project>
+      <Name>MRS.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MRS.Infrastructure.Common\MRS.Infrastructure.Common.csproj">
+      <Project>{b9f33e5d-31b9-4570-97ed-390eeadbc5da}</Project>
+      <Name>MRS.Infrastructure.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
