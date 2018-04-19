@@ -30,19 +30,23 @@ namespace MRS.Website
             return locations;
         }
 
-        private void InitializeStateButtons(ICollection<LookupDataDto> states)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            pnlStateButtons.Controls
-                .OfType<WebControl>()
-                .Where(x => states.Any(s => x.Attributes["data-stateid"] == s.ID))
-                .ToList()
-                .ForEach(ctrl => ctrl.Visible = true);
-        }
-               
-        protected void ddlCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var mainCategoryId = ddlCategory.SelectedValue;
-            LoadSubCategoriesInDropdownlist(mainCategoryId);
+            if (!IsPostBack)
+            {
+                LoadDropdownlists();   
+                
+                if (IsExistingRequest(out string requestNumber))
+                {   
+                    LoadRequest(requestNumber);
+                    lnkShowWorkOrderForm.NavigateUrl = "~/WorkOrder.aspx?RequestNumber=" + requestNumber;
+                    InitializeStateButtons(requestNumber);
+                }
+                else
+                {
+                    HideWorkOrderActionButtons();
+                }
+            }
         }
 
         protected void lBtnSaveRequest_Click(object sender, EventArgs e)
@@ -58,13 +62,13 @@ namespace MRS.Website
 
                     var createRequestCommand = new CreateRequestCommand
                     (
-                        requestNumberGuid,
-                        txtTitle.Text,
-                        txtRequestDescription.Text,
-                        hfLocation.Value,
-                        ddlSubcategory.SelectedValue,
-                        ddlSeverity.SelectedValue,
-                        User.IDNumber
+                        requestNumber: requestNumberGuid,
+                        title: txtTitle.Text,
+                        description: txtRequestDescription.Text,
+                        locationID: hfLocation.Value,
+                        subCategoryID: ddlSubcategory.SelectedValue,
+                        severityID: ddlSeverity.SelectedValue,
+                        requesterIDNumber: User.IDNumber
                     );
 
                     GetCommandHandler<CreateRequestCommand>().Handle(createRequestCommand);
@@ -86,13 +90,20 @@ namespace MRS.Website
             }
         }
 
+        protected void ddlCategory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var mainCategoryId = ddlCategory.SelectedValue;
+            LoadSubCategoriesInDropdownlist(mainCategoryId);
+        }
+
+
         protected void lBtnState_Click(object sender, EventArgs e)
         {
             var stateId = ((LinkButton)sender).Attributes["data-stateid"];
             var reason = hfRejectReason.Value;
             var requestNumber = litRequestNumber.Text;
 
-            switch(stateId)
+            switch (stateId)
             {
                 case "Approved":
                     RequestService.ApproveRequest(requestNumber, User.IDNumber);
@@ -102,7 +113,7 @@ namespace MRS.Website
                     break;
                 case "Rejected":
                     RequestService.RejectRequest(requestNumber, User.IDNumber, reason);
-                    break;                
+                    break;
                 case "WorkRejected":
                     RequestService.RejectWork(requestNumber, User.IDNumber, reason);
                     break;
@@ -114,26 +125,29 @@ namespace MRS.Website
             Response.Redirect("Request.aspx?RequestNumber=" + requestNumber);
         }
 
-        protected void Page_Load(object sender, EventArgs e)
+        private void InitializeStateButtons(string requestNumber)
         {
-            if (!IsPostBack)
-            {
-                LoadDropdownlists();
-                var requestNumber = Request.QueryString["RequestNumber"];
-                if (!string.IsNullOrWhiteSpace(requestNumber))
-                {
-                    var request = RequestService.GetRequest(requestNumber, User.IDNumber);
-                    var states = LookupService.GetNextPossibleStates(User.IDNumber, requestNumber);
-                    LoadRequest(request);
-                    InitializeStateButtons(states);
+            var states = LookupService.GetNextPossibleStates(User.IDNumber, requestNumber);
 
-                    //var shouldShowWorkOrderForm = Request.QueryString["ShowWorkOrder"] == "true";
-                    //if (shouldShowWorkOrderForm)
-                    //{
-                        
-                    //}
-                }
-            }
+            pnlStateButtons.Controls
+                .OfType<WebControl>()
+                .Where(x => states.Any(s => x.Attributes["data-stateid"] == s.ID))
+                .ToList()
+                .ForEach(ctrl => ctrl.Visible = true);
+        }
+
+        private bool IsExistingRequest(out string requestNumber)
+        {
+            requestNumber = Request.QueryString["RequestNumber"];
+
+            return !string.IsNullOrWhiteSpace(requestNumber);
+        }
+
+
+        private void HideWorkOrderActionButtons()
+        {
+            lBtnEmailWorker.Visible = false;
+            lnkShowWorkOrderForm.Visible = false;
         }
 
         private void LoadCategoriesInDropdownlist()
@@ -153,9 +167,11 @@ namespace MRS.Website
             LoadCategoriesInDropdownlist();
         }
              
-        private void LoadRequest(RequestDetailsDto request)
+        private void LoadRequest(string requestNumber)
         {
-            Session["request"] = request;
+            var request = RequestService.GetRequest(requestNumber, User.IDNumber);
+
+            Session[$"request_{request.RequestNumber}"] = request;
 
             htmlLblRequestNum.Visible = true;
             htmlLblState.Visible = true;
@@ -174,9 +190,11 @@ namespace MRS.Website
             ddlSubcategory.Enabled = false;
             txtLocationAutoCompleteBox.Enabled = false;
 
+
+
             if (request.WorderOrderData == null)
             {
-                lnkShowWorkOrderForm.Visible = false;
+                HideWorkOrderActionButtons();
             }
         }
 
@@ -196,6 +214,6 @@ namespace MRS.Website
             ddlSubcategory.DataValueField = "ID";
             ddlSubcategory.DataTextField = "Name";
             ddlSubcategory.DataBind();
-        }
+        }        
     }
 }

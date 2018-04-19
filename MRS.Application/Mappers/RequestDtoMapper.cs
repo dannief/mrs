@@ -33,7 +33,7 @@ namespace MRS.Application.Mappers
 
             
             var workOrder = request.WorkOrder;
-            if (workOrder.IsNull)
+            if (!workOrder.IsNull)
             {
                 var workOrderDto = new WorkOrderDto
                 {

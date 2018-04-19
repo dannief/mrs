@@ -31,7 +31,7 @@ namespace MRS.Tests.Unit.Domain
                 Assert.Throws<ApplicationException>(
                     delegate
                     {
-                        var request = _user.CreateRequest("", "", null, _category, Severity.Critical);
+                        var request = CreateRequest(null, _category);
                     });
             }
 
@@ -43,14 +43,14 @@ namespace MRS.Tests.Unit.Domain
                 Assert.Throws<ApplicationException>(
                     delegate
                     {
-                        request = _user.CreateRequest("", "", Location.None, _category, Severity.Critical);
+                        request = CreateRequest(Location.None, _category);
                     });                                
             }
 
             [Fact]
             public void ShouldEnsureRequestHasLocationToService()
             {
-                var request = _user.CreateRequest("", "", _room, _category, Severity.Critical);
+                var request = CreateRequest(_room, _category);
 
                 Assert.Equal(_room, request.LocationToService);
             }
@@ -58,15 +58,15 @@ namespace MRS.Tests.Unit.Domain
             [Fact]
             public void ShouldEnsureRequestRequesterNotNull()
             {
-                var request = _user.CreateRequest("", "", _room, _category, Severity.Critical);
-                
+                var request = CreateRequest(_room, _category);
+
                 Assert.Equal(_user, request.Requester);
             }
                         
             [Fact]
             public void ShouldEnsureRequestCategoryNotNull()
             {
-                var request = _user.CreateRequest("", "", _room, _category, Severity.Critical);
+                var request = CreateRequest(_room, _category);
 
                 Assert.Equal(_category, request.Category);
             }
@@ -77,8 +77,14 @@ namespace MRS.Tests.Unit.Domain
                 Assert.Throws<ApplicationException>(
                     delegate
                     {
-                        var request = _user.CreateRequest("", "", _room, Category.None, Severity.Critical);
+                        var request = CreateRequest(_room, Category.None);
                     });
+            }
+
+
+            private Request CreateRequest(Location location, Category category)
+            {
+                return _user.CreateRequest(Guid.Empty, "", "", location, _category, Severity.Critical);
             }
 
         }

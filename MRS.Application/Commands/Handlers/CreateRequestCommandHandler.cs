@@ -34,7 +34,13 @@ namespace MRS.Application.Commands.Handlers
             var maintenanceCategory = lookupData.GetCategories().Single(x => x.ID == command.SubCategoryID);
             var severity = (Severity)int.Parse(command.SeverityID);
 
-            var request = userRequester.CreateRequest(command.Title, command.Description, locationToService, maintenanceCategory, severity);
+            var request = userRequester.CreateRequest(
+                command.RequestNumber,
+                command.Title, 
+                command.Description, 
+                locationToService, 
+                maintenanceCategory, 
+                severity);
 
             requests.SaveRequest(request);
         }

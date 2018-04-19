@@ -5,9 +5,11 @@
     Work Order
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="main" runat="server">    
+    
+    <label runat="server" class="text-muted" id="htmlLblRequestNum">Request Number</label>
+    <p class="text-muted"><asp:Literal ID="litRequestNumber" runat="server"/></p>
     <label runat="server" id="htmlLblWorkOrderNum" visible="false">Work Order Number</label>
-    <p class="text-info">
-        <asp:Literal ID="litRequestNumber" runat="server" Visible="false"/>
+    <p class="text-info">        
         <asp:Literal ID="litWorkOrderNumber" runat="server" Visible="false"></asp:Literal>
     </p>
     <label>Assigned Worker</label>

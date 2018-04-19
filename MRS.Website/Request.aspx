@@ -102,8 +102,7 @@
                         <i class="icon-envelope"></i>
                         <div>Email Worker</div>
                     </asp:LinkButton>   
-                    <asp:Hyperlink ID="lnkShowWorkOrderForm" runat="server" CssClass="btn action-button" ClientIDMode="Static"
-                        NavigateUrl="~/WorkOrder.aspx">
+                    <asp:Hyperlink ID="lnkShowWorkOrderForm" runat="server" CssClass="btn action-button" ClientIDMode="Static">
                         <i class="icon-wrench"></i>
                         <div>View Work Order</div>
                     </asp:Hyperlink>                             

@@ -25,7 +25,7 @@ namespace MRS.Application.Mappers
             };
 
             var workOrder = request.WorkOrder;
-            if (workOrder != null)
+            if (!workOrder.IsNull)
             {
                 var workOrderListItemDto = new WorkOrderListItemDto
                 {

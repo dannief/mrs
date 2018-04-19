@@ -16,8 +16,22 @@ namespace MRS.Website
         {
             if (!IsPostBack)
             {
-                var requestDto = Session["request"] as RequestDetailsDto;
-                LoadWorkOrder(requestDto);
+                RequestDetailsDto requestDto = null;
+
+                var requestNumber = Request.QueryString["RequestNumber"];
+                if (!string.IsNullOrEmpty(requestNumber))
+                {
+                    requestDto = Session[$"request_{requestNumber}"] as RequestDetailsDto;
+                    if (requestDto == null)
+                    {
+                        requestDto = RequestService.GetRequest(requestNumber, User.IDNumber);
+                    }
+                }
+                
+                if (requestDto != null)
+                {
+                    LoadWorkOrder(requestDto);
+                }
             }
         }
 
@@ -47,14 +61,14 @@ namespace MRS.Website
         private void LoadWorkOrder(RequestDetailsDto requestDto)
         {
             LoadWorkOrderFormDropdownLists(requestDto);
+                                  
+            litRequestNumber.Text = requestDto.RequestNumber;
 
             var workOrderData = requestDto.WorderOrderData;
             if (workOrderData != null)
             {
-                htmlLblWorkOrderNum.Visible = true;                
-                litRequestNumber.Visible = true;
-                //litWorkOrderNumber.Visible = true;
-                litRequestNumber.Text = requestDto.RequestNumber;
+                htmlLblWorkOrderNum.Visible = true;  
+                litWorkOrderNumber.Visible = true;
                 litWorkOrderNumber.Text = workOrderData.WorkOrderNumber;
                 ddlAssignedWorker.SelectedValue = workOrderData.WorkerIDNumber;
                 txtWorkOrderDescription.Text = workOrderData.Description;

@@ -22,28 +22,25 @@ namespace MRS.Infrastructure.EFData
         {
             this.context = context;
         }
-
-        public Request GetByRequestNumber(string requestNumber)
+        
+        public Request GetByRequestNumber(string requestNumber, Func<Request, bool> filter = null)
         {
-            var request = GetRequestWithIncludes()
-                .SingleOrDefault(x => x.RequestNumber == new Guid(requestNumber));
+            var requestNumberGuid = new Guid(requestNumber);
 
-            SetNullCategory(request.Category);
-            SetNullLocation(request.LocationToService);
+            var query =
+                GetRequestWithIncludes()
+                .Where(x => x.RequestNumber == requestNumberGuid);
 
-            return request;
-        }
+            if(filter != null)
+            {
+                query = query.Where(filter).AsQueryable();
+            }
 
-        public Request GetByRequestNumber(string requestNumber, Func<Request, bool> filter)
-        {
-            var request = GetRequestWithIncludes()
-                .Where(x => filter(x) && x.RequestNumber == new Guid(requestNumber))
-                .SingleOrDefault();
+            var request = query.SingleOrDefault();
 
             if (request != null)
             {
-                SetNullCategory(request.Category);
-                SetNullLocation(request.LocationToService);
+                SetNullsWithNullObjects(request);
             }
             else
             {
@@ -52,7 +49,7 @@ namespace MRS.Infrastructure.EFData
 
             return request;
         }
-
+                
         public ICollection<Request> GetRequests(Func<Request, bool> filter)
         {
             var requests = GetRequestWithIncludes()
@@ -60,14 +57,12 @@ namespace MRS.Infrastructure.EFData
                 .ToList();
 
             return requests;
-        }
+        }        
         
-        //[AuditAspect]
         public void SaveRequest(Request request)
         {
-            UnSetNullCategory(request.Category);
-            UnSetNullLocation(request.LocationToService);
-            
+            ReplaceNullObjectsWithNulls(request);
+
             request.Requester.Tenancies = null;
 
             if (request.Requester is Supervisor)
@@ -77,7 +72,7 @@ namespace MRS.Infrastructure.EFData
                 requester.SupervisedLocation = null;
                 requester.Tenancies = null;
             }
-            else if(request.Requester is Worker)
+            else if (request.Requester is Worker)
             {
                 var requester = request.Requester as Worker;
                 requester.Supervisor = null;
@@ -86,32 +81,44 @@ namespace MRS.Infrastructure.EFData
 
             context.Set<Location>().Attach(request.LocationToService);
             context.Set<Category>().Attach(request.Category);
-            context.Set<User>().Attach(request.Requester);          
-            context.Set<RequestState>().Attach(request.State);            
-            if (request.WorkOrder != null) 
+            context.Set<User>().Attach(request.Requester);
+            context.Set<RequestState>().Attach(request.State);
+            if (request.WorkOrder != null)
             {
                 var workOrder = request.WorkOrder;
                 context.Set<User>().Attach(workOrder.AssignedWorker);
-                context.Entry(workOrder).State = workOrder.WorkOrderNumber == Guid.Empty ? EntityState.Added : EntityState.Modified;
+
+                if (workOrder.WorkOrderNumber == Guid.Empty)
+                {
+                    workOrder.WorkOrderNumber = Guid.NewGuid();
+                    context.Entry(workOrder).State = EntityState.Added;
+                }
+                else
+                {
+                    context.Entry(workOrder).State = EntityState.Modified;
+                }
             }
-                      
-            context.Entry(request).State = request.RequestNumber == Guid.Empty ? EntityState.Added : EntityState.Modified;
-                        
-            if (request.RequestNumber != Guid.Empty)
+
+            var oldRequest = context.Set<Request>()
+            .Include(x => x.State)
+            .Where(x => x.RequestNumber == request.RequestNumber)
+            .AsNoTracking()
+            .SingleOrDefault();
+
+            context.Entry(request).State = oldRequest == null ? EntityState.Added : EntityState.Modified;
+
+            if (oldRequest != null && oldRequest.State != request.State)
             {
-                var oldState = context.Set<Request>()
-                .Include(x => x.State)
-                .Where(x => x.RequestNumber == request.RequestNumber)
-                .Select(x => x.State)
-                .Single();
                 context.ChangeRelationshipState(request, request.State, r => r.State, EntityState.Added);
-                context.ChangeRelationshipState(request, oldState, r => r.State, EntityState.Deleted);
+
+                oldRequest.State.Request = null;
+                context.Set<RequestState>().Attach(oldRequest.State);
+                context.ChangeRelationshipState(request, oldRequest.State, r => r.State, EntityState.Deleted);
             }
 
             context.SaveChanges();
         }
-                       
-        //[AuditAspect]
+        
         public void UpdateRequestDetails(string requestNumber, string title, string description)
         {
             context.Set<Request>()
@@ -134,52 +141,68 @@ namespace MRS.Infrastructure.EFData
                             .AsNoTracking();
         }
 
-        private void SetNullLocation(Location location)
+        
+        private void SetNullsWithNullObjects(Request request)
         {
-            Location tempLocation = location;
-
-            while (tempLocation.ParentLocation != null)
+            void SetNullLocation(Location location)
             {
-                tempLocation = tempLocation.ParentLocation;
+                Location tempLocation = location;
+
+                while (tempLocation.ParentLocation != null)
+                {
+                    tempLocation = tempLocation.ParentLocation;
+                }
+
+                tempLocation.ParentLocation = Location.None;
             }
 
-            tempLocation.ParentLocation = Location.None;
+            void SetNullCategory(Category category)
+            {
+                Category tempCategory = category;
+
+                while (tempCategory.ParentCategory != null)
+                {
+                    tempCategory = tempCategory.ParentCategory;
+                }
+
+                tempCategory.ParentCategory = Category.None;
+            }
+
+
+            SetNullCategory(request.Category);
+            SetNullLocation(request.LocationToService);
+            if (request.WorkOrder == null) request.WorkOrder = WorkOrder.None;
         }
 
-        private void SetNullCategory(Category category)
+        private void ReplaceNullObjectsWithNulls(Request request)
         {
-            Category tempCategory = category;
-
-            while (tempCategory.ParentCategory != null)
+            void UnSetNullLocation(Location location)
             {
-                tempCategory = tempCategory.ParentCategory;
+                Location tempLocation = location;
+
+                while (tempLocation.ParentLocation != null && !tempLocation.ParentLocation.IsNull)
+                {
+                    tempLocation = tempLocation.ParentLocation;
+                }
+
+                tempLocation.ParentLocation = null;
             }
 
-            tempCategory.ParentCategory = Category.None;
-        }
-
-        private void UnSetNullLocation(Location location)
-        {
-            Location tempLocation = location;
-
-            while (tempLocation.ParentLocation != null && !tempLocation.ParentLocation.IsNull)
+            void UnSetNullCategory(Category category)
             {
-                tempLocation = tempLocation.ParentLocation;
+                Category tempCategory = category;
+
+                while (tempCategory.ParentCategory != null && !tempCategory.ParentCategory.IsNull)
+                {
+                    tempCategory = tempCategory.ParentCategory;
+                }
+
+                tempCategory.ParentCategory = null;
             }
 
-            tempLocation.ParentLocation = null;
-        }
-
-        private void UnSetNullCategory(Category category)
-        {
-            Category tempCategory = category;
-
-            while (tempCategory.ParentCategory != null && !tempCategory.ParentCategory.IsNull)
-            {
-                tempCategory = tempCategory.ParentCategory;
-            }
-
-            tempCategory.ParentCategory = null;
+            UnSetNullCategory(request.Category);
+            UnSetNullLocation(request.LocationToService);
+            if (request.WorkOrder != null && request.WorkOrder.IsNull) request.WorkOrder = null;
         }
     }
 }

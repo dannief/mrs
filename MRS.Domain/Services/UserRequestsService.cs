@@ -38,7 +38,7 @@ namespace MRS.Domain.Services
 
             if(request.IsNull)
             {
-                throw new MrsException("The user does not have access to the request");
+                throw new MrsException("The user does not have access to the request or request does not exist");
             }
 
             if (!user.CanViewWorkOrder(request))

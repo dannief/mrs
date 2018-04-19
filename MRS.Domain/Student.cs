@@ -9,11 +9,17 @@ namespace MRS.Domain
 {
     public class Student : User
     {
-        public override Request CreateRequest(string title, string description, Location locationToService, Category maintenanceCategory, Severity severity)
+        public override Request CreateRequest(
+            Guid requestNumber,
+            string title, 
+            string description, 
+            Location locationToService, 
+            Category maintenanceCategory, 
+            Severity severity)
         {
             CheckIfUserIsTenantOfLocation(locationToService);
 
-            var request = base.CreateRequest(title, description, locationToService, maintenanceCategory, severity);
+            var request = base.CreateRequest(requestNumber, title, description, locationToService, maintenanceCategory, severity);
                        
             return request;
         }
@@ -33,7 +39,7 @@ namespace MRS.Domain
         private void CheckIfUserIsTenantOfLocation(Location locationToService)
         {
             if (!IsTenantOfLocation(locationToService))
-                throw new MrsException("A student cannot create a request for a room in which he does not reside");
+                throw new MrsException("A student cannot create a request for a room where she does not reside");
         }
     }
 }

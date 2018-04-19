@@ -32,8 +32,13 @@ namespace MRS.Domain
             this.Tenancies = new List<Room>();           
         }
 
-        public virtual Request CreateRequest(string title, string description, 
-            Location locationToService, Category maintenanceCategory, Severity severity)
+        public virtual Request CreateRequest(
+            Guid requestNumber,
+            string title, 
+            string description, 
+            Location locationToService, 
+            Category maintenanceCategory, 
+            Severity severity)
         {
             if (locationToService == null || locationToService.IsNull)
             {
@@ -47,17 +52,21 @@ namespace MRS.Domain
 
             return new Request 
             {
+                RequestNumber = requestNumber,
                 Title = title,
                 Description = description,                
                 LocationToService = locationToService, 
                 Category = maintenanceCategory,
                 RequestDate = DateTime.Now,
                 Severity = severity,
-                Requester = this                
+                Requester = this
             };
         }
 
-        public virtual void UpdateRequest(Request request, string title, string description)
+        public virtual void UpdateRequest(
+            Request request, 
+            string title, 
+            string description)
         {
             request.Title = title;
             request.Description = description;
@@ -147,6 +156,6 @@ namespace MRS.Domain
             {
                 return "No User";
             }
-        }
+        }        
     }
 }

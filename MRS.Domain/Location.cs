@@ -31,15 +31,10 @@ namespace MRS.Domain
             var tempLocation = this;
             while (tempLocation != null && !tempLocation.IsNull)
             {
-                locations.Add(tempLocation);
+                locations.Add(tempLocation.Clone());
                 tempLocation = tempLocation.ParentLocation;
             }
-
-            for (int i = locations.Count - 1; i >= 0; i--)
-            {
-                locations[i].ParentLocation = null;
-            }
-
+            
             return locations;
         }
 
@@ -47,6 +42,15 @@ namespace MRS.Domain
         {
             return Name + (ParentLocation == null || ParentLocation.IsNull ? string.Empty : ", " + ParentLocation.ToString());
         }
+
+        public Location Clone()
+        {
+            return new Location
+            {
+                ID = this.ID,
+                Name = this.Name,
+            };
+        } 
            
         public override bool Equals(object obj)
         {

@@ -13,13 +13,13 @@ namespace MRS.Website {
     public partial class WorkOrder {
         
         /// <summary>
-        /// htmlLblWorkOrderNum control.
+        /// htmlLblRequestNum control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl htmlLblWorkOrderNum;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl htmlLblRequestNum;
         
         /// <summary>
         /// litRequestNumber control.
@@ -29,6 +29,15 @@ namespace MRS.Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litRequestNumber;
+        
+        /// <summary>
+        /// htmlLblWorkOrderNum control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl htmlLblWorkOrderNum;
         
         /// <summary>
         /// litWorkOrderNumber control.

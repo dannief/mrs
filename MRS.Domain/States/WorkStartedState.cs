@@ -28,5 +28,15 @@ namespace MRS.Domain.States
 
             return states;
         }
+
+        public override void CompleteWork()
+        {
+            Request.State = Request.completedState;
+        }
+
+        public override void RejectRequest()
+        {
+            Request.State = Request.workRejectedState;
+        }        
     }
 }

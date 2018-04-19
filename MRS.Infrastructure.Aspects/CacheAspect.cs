@@ -25,32 +25,7 @@ namespace MRS.Infrastructure.Aspects
             this.methodName = method.DeclaringType.FullName + "." + method.Name;
             this.cache = new MemoryCacheProvider();
         }
-
-        private string GetCacheKey(object instance, Arguments arguments)
-        {
-            // If we have no argument, return just the method name so we don't uselessly allocate memory. 
-            if (instance == null && arguments.Count == 0)
-                return this.methodName;
-
-            // Add all arguments to the cache key. Note that generic arguments are not part of the cache 
-            // key, so method calls that differ only by generic arguments will have conflicting cache keys.
-            StringBuilder stringBuilder = new StringBuilder(this.methodName);
-            stringBuilder.Append('(');
-            if (instance != null)
-            {
-                stringBuilder.Append(instance);
-                stringBuilder.Append("; ");
-            }
-
-            for (int i = 0; i < arguments.Count; i++)
-            {
-                stringBuilder.Append(arguments.GetArgument(i) ?? "null");
-                stringBuilder.Append(", ");
-            }
-
-            return stringBuilder.ToString();
-        }
-
+        
         // This method is executed before the execution of target methods of this aspect. 
         public override void OnEntry(MethodExecutionArgs args)
         {
@@ -80,6 +55,32 @@ namespace MRS.Infrastructure.Aspects
             string cacheKey = (string)args.MethodExecutionTag;
             cache.Add(cacheKey, args.ReturnValue);
         }
+
+        private string GetCacheKey(object instance, Arguments arguments)
+        {
+            // If we have no argument, return just the method name so we don't uselessly allocate memory. 
+            if (instance == null && arguments.Count == 0)
+                return this.methodName;
+
+            // Add all arguments to the cache key. Note that generic arguments are not part of the cache 
+            // key, so method calls that differ only by generic arguments will have conflicting cache keys.
+            StringBuilder stringBuilder = new StringBuilder(this.methodName);
+            stringBuilder.Append('(');
+            if (instance != null)
+            {
+                stringBuilder.Append(instance);
+                stringBuilder.Append("; ");
+            }
+
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                stringBuilder.Append(arguments.GetArgument(i) ?? "null");
+                stringBuilder.Append(", ");
+            }
+
+            return stringBuilder.ToString();
+        }
+
     }
-    
+
 }

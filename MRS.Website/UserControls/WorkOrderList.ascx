@@ -6,7 +6,7 @@
         <asp:BoundField DataField="Worker" HeaderText="Worker"/>
         <asp:BoundField DataField="Description" HeaderText="Description" />
         <asp:BoundField DataField="Priority" HeaderText="Priority" />
-        <asp:BoundField DataField="RequestNumber" Visible="false" />
+        <asp:BoundField DataField="RequestNumber"/>
     </Columns>
     <EmptyDataTemplate>There are no work orders to display</EmptyDataTemplate>
 </asp:GridView>
@@ -16,13 +16,19 @@
     {
         cursor: pointer;
     }
+
+    #gvWorkOrderList th:last-child,
+    #gvWorkOrderList td:last-child
+    {
+       display: none;
+    }
 </style>
 
 <script type="text/javascript">
     $(function () {
         $("#gvWorkOrderList").on("click", "tr", function () {
-            requestNumber = $(this).children("td:first-child").html();
-            location.href = '<%= ResolveClientUrl("~/Request.aspx?RequestNumber=")%>' + requestNumber;
+            requestNumber = $(this).children("td:last-child").html();
+            location.href = '<%= ResolveClientUrl("~/WorkOrder.aspx?RequestNumber=")%>' + requestNumber;
         });
     });
 </script>

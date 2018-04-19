@@ -1,11 +1,11 @@
 ﻿using PostSharp.Extensibility;
 using MRS.Infrastructure.Aspects;
 
-[assembly: CacheAspectAttribute(
+[assembly: CacheAspect(
     AttributeTargetTypes = "MRS.Infrastructure.EFData.LookupRepository", 
     AttributeTargetMemberAttributes = MulticastAttributes.Public )
 ]
-[assembly: AuditAspectAttribute(
+[assembly: AuditAspect(
     AttributeTargetTypes = "MRS.Infrastructure.EFData.RequestRepository", 
     AttributeTargetMemberAttributes = MulticastAttributes.Public,
     AttributeTargetMembers = "regex:Save.*|Update.*")

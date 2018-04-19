@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using MRS.Website.Code;
 
 namespace MRS.Website
@@ -32,8 +27,8 @@ namespace MRS.Website
             Session.Contents.RemoveAll();
                         
             FormsAuthentication.SignOut();
-
-            FormsAuthentication.RedirectToLoginPage();
+                      
+            Response.Redirect(FormsAuthentication.LoginUrl);
         }
     }
 }

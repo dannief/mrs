@@ -36,15 +36,15 @@ namespace MRS.Domain
 
         public virtual DateTime RequestDate { get; set; }
 
-        public virtual Category Category { get; set; }
+        public virtual Category Category { get; set; } = Category.None;
 
-        public virtual User Requester { get; set; }
+        public virtual User Requester { get; set; } = User.None;
 
-        public virtual Location LocationToService { get; set; }
+        public virtual Location LocationToService { get; set; } = Location.None;
 
         public virtual Severity Severity { get; set; }
 
-        public virtual WorkOrder WorkOrder { get; set; }
+        public virtual WorkOrder WorkOrder { get; set; } = WorkOrder.None;
 
         
 
