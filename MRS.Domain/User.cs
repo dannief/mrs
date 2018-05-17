@@ -91,14 +91,14 @@ namespace MRS.Domain
             var shouldApproveOrReject = isTenantOfLocationToService && isNotRequester;
 
             return
-                state == request.newState ||
-                (state == request.approvedState && shouldApproveOrReject) ||
-                (state == request.rejectedState && shouldApproveOrReject);
+                state == new NewState() ||
+                (state == new ApprovedState() && shouldApproveOrReject) ||
+                (state == new RejectedState() && shouldApproveOrReject);
         }
 
         public virtual bool CanViewRequest(Request request)
         {
-            return request.Requester == this;
+            return request.Requester == this || IsTenantOfLocation(request.LocationToService);
         }
 
         public virtual bool CanViewWorkOrder(Request request)

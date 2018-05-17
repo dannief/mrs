@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MRS.Domain.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,34 +10,32 @@ namespace MRS.Domain.States
     public class WorkAssignedState : RequestState
     {
         public WorkAssignedState()
-            : base()
+            : this(Request.None)
         {
-
         }
 
-        public WorkAssignedState(Request request) : base(request)
+        public WorkAssignedState(Request request) 
+            : base("WorkAssigned", "Work Assigned", request)
         {
-            ID = "WorkAssigned";
-            Name = "Work Assigned";
         }
-
+        
         public override ICollection<IRequestState> GetNextPossibleStates()
         {
             var states = new List<IRequestState>();
-            states.Add(Request.workStartedState);
-            states.Add(Request.workRejectedState);
+            states.Add(Request.WorkStarted());
+            states.Add(Request.WorkRejected());
             
             return states;
         }
 
-        public override void RejectRequest()
+        public override void RejectWork()
         {
-            Request.State = Request.rejectedState;
+            Request.State = Request.WorkRejected();
         }
 
         public override void StartWork()
         {
-            Request.State = Request.workStartedState;
+            Request.State = Request.WorkRejected();
         }
     }
 }

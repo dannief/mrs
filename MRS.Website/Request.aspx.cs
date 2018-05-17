@@ -39,7 +39,10 @@ namespace MRS.Website
                 if (IsExistingRequest(out string requestNumber))
                 {   
                     LoadRequest(requestNumber);
-                    lnkShowWorkOrderForm.NavigateUrl = "~/WorkOrder.aspx?RequestNumber=" + requestNumber;
+                    lnkShowWorkOrderForm.NavigateUrl = 
+                        lnkCreateWorkOrder.NavigateUrl = 
+                        "~/WorkOrder.aspx?RequestNumber=" + requestNumber;
+                    
                     InitializeStateButtons(requestNumber);
                 }
                 else

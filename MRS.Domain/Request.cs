@@ -11,23 +11,7 @@ namespace MRS.Domain
     {
         public static readonly NullRequest None = new NullRequest();
 
-        // States
-        internal RequestState newState;
-
-        internal RequestState approvedState;
         
-        internal RequestState rejectedState;
-        
-        internal RequestState workAssignedState;        
-        
-        internal RequestState workStartedState;
-        
-        internal RequestState workRejectedState;
-        
-        internal RequestState completedState;
-
-
-
         public virtual Guid RequestNumber { get; set; }
 
         public virtual string Title { get; set; }
@@ -67,16 +51,7 @@ namespace MRS.Domain
 
         public Request()
         {
-            newState = new NewState(this);
-            workAssignedState = new WorkAssignedState(this);
-            rejectedState = new RejectedState(this);
-            workAssignedState = new WorkAssignedState(this);
-            completedState = new CompletedState(this);
-            workStartedState = new WorkStartedState(this);
-            approvedState = new ApprovedState(this);
-            workRejectedState = new WorkRejectedState(this);
-
-            State = newState;
+            State = new NewState(this);
         }
 
         public void AddWorkOrder(WorkOrder workOrder)

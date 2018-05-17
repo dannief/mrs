@@ -69,7 +69,7 @@
                         </asp:LinkButton>
 
                         <asp:HyperLink ID="lnkCreateWorkOrder" runat="server" CssClass="btn btn-info action-button" 
-                            data-stateid="WorkAssigned" Visible="false" ClientIDMode="Static" NavigateUrl="~/WorkOrder.aspx">
+                            data-stateid="WorkAssigned" Visible="false" ClientIDMode="Static">
                         <i class="icon-wrench"></i>
                         <div>Create Worker Order</div>
                         </asp:HyperLink>

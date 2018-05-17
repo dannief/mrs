@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MRS.Domain.States;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,9 +23,9 @@ namespace MRS.Domain
             var isAssignedToRequest = IsWorkerAssignedToRequest(request);
 
             return base.CanChangeToState(state) ||
-                (state == request.workStartedState && isAssignedToRequest) ||
-                (state == request.workRejectedState && isAssignedToRequest) ||
-                (state == request.completedState && isAssignedToRequest);
+                (state == new WorkStartedState() && isAssignedToRequest) ||
+                (state == new WorkRejectedState() && isAssignedToRequest) ||
+                (state == new WorkAssignedState() && isAssignedToRequest);
         }
 
         public override bool CanViewRequest(Request request)

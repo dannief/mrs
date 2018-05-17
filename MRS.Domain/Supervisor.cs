@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MRS.Domain.States;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,10 +23,10 @@ namespace MRS.Domain
             var isSupervisorOfLocationToService = IsSupervisorOfLocation(request.LocationToService);
 
             return base.CanChangeToState(state) ||
-                (state == request.workAssignedState && isSupervisorOfLocationToService) ||
-                (state == request.workStartedState && isSupervisorOfLocationToService) ||
-                (state == request.workRejectedState && isSupervisorOfLocationToService) ||
-                (state == request.completedState && isSupervisorOfLocationToService);
+                (state == new WorkAssignedState() && isSupervisorOfLocationToService) ||
+                (state == new WorkStartedState() && isSupervisorOfLocationToService) ||
+                (state == new WorkRejectedState() && isSupervisorOfLocationToService) ||
+                (state == new CompletedState() && isSupervisorOfLocationToService);
         }
 
         public void CreateWorkOrder(Request request, Worker assignedWorker, string description, Priority priority)

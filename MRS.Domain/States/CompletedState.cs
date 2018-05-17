@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MRS.Domain.States
 {
     public class CompletedState : RequestState
     {
         public CompletedState()
-            : base()
+            : this(Request.None)
         {
-
         }
 
-        public CompletedState(Request request) : base (request)
+        public CompletedState(Request request) 
+            : base ("Completed", "Completed", request)
         {
-            ID = "Completed";
-            Name = "Completed";
         }
 
         public override ICollection<IRequestState> GetNextPossibleStates()

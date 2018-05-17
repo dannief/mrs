@@ -8,7 +8,7 @@ using MRS.Domain.Utils;
 namespace MRS.Domain.States
 {
     public abstract class RequestState : IRequestState
-    {
+    { 
         public virtual Request Request { get; set; }
 
         public virtual string ID { get; set; }
@@ -16,15 +16,12 @@ namespace MRS.Domain.States
         public virtual string Name { get; set; }
 
         public virtual bool IsNull { get { return false; } }
-
-        public RequestState()
+                
+        public RequestState(string id, string name, Request request)            
         {
-        
-        }
-
-        public RequestState(Request request)
-        {
-            this.Request = request;
+            ID = id;
+            Name = name;
+            Request = request;
         }
 
         public virtual void CreateNewRequest()
@@ -108,12 +105,11 @@ namespace MRS.Domain.States
 
         public class NullRequestState : RequestState
         {
-            public override string ID { get { return string.Empty; } }
-
-            public override string Name { get { return string.Empty; } }
-
-            public override Request Request { get { return Request.None; } }
-
+            public NullRequestState()
+                : base(string.Empty, string.Empty, Request.None)
+            {
+            }
+            
             public override bool IsNull { get { return true; } }
 
             public override ICollection<IRequestState> GetNextPossibleStates()

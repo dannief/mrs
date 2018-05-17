@@ -1,48 +1,43 @@
-﻿using System;
+﻿using MRS.Domain.Utils;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MRS.Domain.States
 {
     public class NewState : RequestState
     {
         public NewState()
-            : base()
+            : this(Request.None)
         {
-
         }
 
-        public NewState(Request request) : base(request)
+        public NewState(Request request) 
+            : base("New", "New" , request)
         {
-            ID = "New";
-            Name = "New";
-        }
+        }        
 
         public override ICollection<IRequestState> GetNextPossibleStates()
         {
             var states = new List<IRequestState>();
-            states.Add(Request.approvedState);
-            states.Add(Request.rejectedState);
-            states.Add(Request.workAssignedState);
+            states.Add(Request.Approved());
+            states.Add(Request.Rejected());
+            states.Add(Request.WorkAssigned());
 
             return states;
         }
 
         public override void ApproveRequest()
         {
-            Request.State = Request.approvedState;
+            Request.State = Request.Approved();
         }
 
         public override void RejectRequest()
         {
-            Request.State = Request.rejectedState;
+            Request.State = Request.Rejected();
         }
 
         public override void CreateWorkOrder()
         {
-            Request.State = Request.workAssignedState;
-        }
+            Request.State = Request.WorkAssigned();
+        }        
     }
 }

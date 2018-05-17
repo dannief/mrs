@@ -67,6 +67,7 @@
     <Compile Include="Staff.cs" />
     <Compile Include="Student.cs" />
     <Compile Include="Utils\MrsException.cs" />
+    <Compile Include="Utils\RequestExtenstions.cs" />
     <Compile Include="Worker.cs" />
     <Compile Include="WorkOrder.cs" />
   </ItemGroup>

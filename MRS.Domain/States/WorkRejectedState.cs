@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MRS.Domain.States
 {
     public class WorkRejectedState : RequestState
     {
         public WorkRejectedState()
-            : base()
+            : this(Request.None)
         {
-
         }
 
-        public WorkRejectedState(Request request) : base(request)
+        public WorkRejectedState(Request request) : 
+            base("WorkRejected", "Work Rejected", request)
         {
-            ID = "WorkRejected";
-            Name = "Work Rejected";
         }
 
         public override ICollection<IRequestState> GetNextPossibleStates()

@@ -1,42 +1,37 @@
-﻿using System;
+﻿using MRS.Domain.Utils;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MRS.Domain.States
 {
     public class WorkStartedState : RequestState
     {
         public WorkStartedState()
-            : base()
+            : this(Request.None)
         {
-
         }
 
-        public WorkStartedState(Request request) : base(request)
-        {
-            ID = "WorkStarted";
-            Name = "Work Started";
+        public WorkStartedState(Request request) : 
+            base("WorkStarted", "Work Started", request)
+        {           
         }
 
         public override ICollection<IRequestState> GetNextPossibleStates()
         {
             var states = new List<IRequestState>();
-            states.Add(Request.completedState);
-            states.Add(Request.workRejectedState);
+            states.Add(Request.Completed());
+            states.Add(Request.WorkRejected());
 
             return states;
         }
 
         public override void CompleteWork()
         {
-            Request.State = Request.completedState;
+            Request.State = Request.Completed();
         }
 
         public override void RejectRequest()
         {
-            Request.State = Request.workRejectedState;
+            Request.State = Request.WorkRejected();
         }        
     }
 }
